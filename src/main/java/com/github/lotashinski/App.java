@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.lotashinski.collections.CustomList;
+
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
+        List<String> list = new CustomList<>();
+        list.add("Hello");
+        list.add("!");
+        list.add(" ");
+        list.add("World");
+        list.add("!");
         
-        Iterator<String> itr = list.iterator();
-        System.out.println(itr.next());
-        
-        list.set(2, "5");
-        
-        System.out.println(itr.next());
+        for (String string : list) {
+        	System.out.print(string);
+		}
     }
 }
