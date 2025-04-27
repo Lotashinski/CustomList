@@ -2,6 +2,7 @@ package com.github.lotashinski.collections;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class CustomList<T> extends ModifiedList<T> implements List<T> {
@@ -36,8 +37,6 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 			a = (T[]) Array.newInstance(a.getClass().componentType(), size());
 		if (a.length > size()) a[size()] = null;
 		
-		// TODO add throws from super implementation
-		
 		System.arraycopy(container, 0, a, 0, size());
 		
 		return a;
@@ -58,7 +57,17 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 	@Override
 	public void clear() {
 		incModofications();
-		size = 0;		
+		size = 0;
+		
+		/*
+		 * For garbage collector: 
+		 * The old container can 
+		 * be freed from memory 
+		 * before the new one 
+		 * is initialized.
+		 */
+		container = null; 
+		container = new Object[INIT_CAPACITY];
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,6 +95,17 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		shiftRight(index, 1);
 		container[index] = element;
 	}
+	
+	@Override
+	public boolean addAll(int index, Collection<? extends T> c) {
+		incModofications();
+		shiftRight(index, c.size());
+		Iterator<? extends T> it = c.iterator();
+		while(it.hasNext())
+			set(index++, it.next());
+		
+		return true;
+	}
 
 	@Override
 	public T remove(int index) {
@@ -111,7 +131,7 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		size += elements;
 		int end = index + elements;
 		for(int i = size - 1; i >= end; --i) {
-			container[i] = container[i - 1]; 
+			container[i] = container[i - elements]; 
 		}
 	}
 	
@@ -261,6 +281,12 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 			checkModifications(main);
 			
 			return new SubList<>(this, fromIndex, toIndex);
+		}
+
+
+		@Override
+		public boolean addAll(int index, Collection<? extends E> c) {
+			return main.addAll(offset + index, c);
 		}
 		
 	}

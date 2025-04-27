@@ -1,7 +1,5 @@
 package com.github.lotashinski;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.lotashinski.collections.CustomList;
@@ -10,7 +8,8 @@ import com.github.lotashinski.collections.CustomList;
  * Hello world!
  */
 public class App {
-    public static void main(String[] args) {
+    
+	public static void main(String[] args) {
         List<String> list = new CustomList<>();
         list.add("Hello");
         list.add("!");
@@ -20,6 +19,7 @@ public class App {
         
         for (String string : list) {
         	System.out.print(string);
-		}
+        }
     }
+    
 }

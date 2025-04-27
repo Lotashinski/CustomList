@@ -2,7 +2,6 @@ package com.github.lotashinski.collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.lang.ref.Reference;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -392,5 +391,49 @@ class CustomListTest {
 		
 		assertEquals(refi.hasNext(), listi.hasNext());
 	}
+	
+	@Test
+	void testListIteratorRemoveException() {
+		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4, 5));
+		
+		ListIterator<Integer> iterator = list.listIterator();
+		
+		try {
+			iterator.remove();
+		}catch (IllegalStateException e) {
+			// It`s OK
+		}
+	}
+	
+	@Test
+	void testListIteratorRemove() {
+		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4, 5));
+		
+		ListIterator<Integer> iterator = list.listIterator();
+		
+		assertTrue(iterator.hasNext());
+		int firstElement = iterator.next(); 
+		assertEquals(1, firstElement);
+		
+		iterator.remove();
+		
+		assertEquals(2, list.get(0));
+		assertFalse(iterator.hasPrevious());
+	}
 
+	@Test
+	void testListIteratorPreviousIndexAndNextIndex() {
+		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4, 5));
+		
+		ListIterator<Integer> iterator = list.listIterator();
+		 
+		assertEquals(-1, iterator.previousIndex());
+		assertEquals(1, iterator.nextIndex());
+		
+		iterator = list.listIterator(4);
+		
+		assertEquals(list.size() - 2, iterator.previousIndex());
+		assertEquals(list.size(), iterator.nextIndex());
+	}
+	
 }
