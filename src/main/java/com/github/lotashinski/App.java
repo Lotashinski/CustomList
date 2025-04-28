@@ -20,6 +20,9 @@ public class App {
         for (String string : list) {
         	System.out.print(string);
         }
+        
+        CustomList<Person> persons = new CustomList<>();
+        persons.sort(null);
     }
     
 }

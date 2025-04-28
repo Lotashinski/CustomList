@@ -2,6 +2,7 @@ package com.github.lotashinski.collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -42,7 +43,8 @@ class CustomListTest {
 	
 	@Test
 	void testToArrayTArrayTargetIsEmty() {
-		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+				11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 		List<Integer> list = new CustomList<>();
 		
 		for(int i = 0; i < ints.length; ++i) {
@@ -55,7 +57,8 @@ class CustomListTest {
 
 	@Test
 	void testToArrayTArrayTargetIsEqual() {
-		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+				11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 		List<Integer> list = new CustomList<>();
 		
 		for(int i = 0; i < ints.length; ++i) {
@@ -68,7 +71,9 @@ class CustomListTest {
 	
 	@Test
 	void testToArrayTArrayTargetIsGreater() {
-		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+				11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+				21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		List<Integer> list = new CustomList<>();
 		
 		for(int i = 0; i < ints.length; ++i) {
@@ -115,6 +120,31 @@ class CustomListTest {
 		assertEquals(list.size(), 0);
 	}
 
+	@Test
+	void testClearAndAdd() {
+		List<Integer> reference = List.of(1, 2, 3, 4, 5);
+		List<Integer> list = new CustomList<>(reference);
+		
+		assertEquals(reference, list);
+		assertEquals(reference.size(), list.size());
+		
+		list.clear();
+		
+		assertEquals(list, List.of());
+		assertEquals(list.size(), 0);
+		
+		Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+				11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+		
+		
+		for(int i = 0; i < ints.length; ++i) {
+			list.add(ints[i]);
+		}
+		
+		Number[] nums = list.toArray(new Number[ints.length]);
+		assertArrayEquals((Number[]) ints, nums);
+	}
+	
 	@Test
 	void testGet() {
 		List<Integer> reference = List.of(1, 2, 3, 4, 5);
@@ -215,17 +245,34 @@ class CustomListTest {
 	@Test
 	void testSubList() {
 		List<Integer> reference = List.of(1, 2, 3, 4, 5);
-		List<Integer> reference2 = List.of(2, 3, 4);
+		List<Integer> reference2 = reference.subList(1, reference.size());
 		
 		List<Integer> list = new CustomList<>(reference);
-		List<Integer> view = list.subList(1, 4);
+		List<Integer> view = list.subList(1, list.size());
 		
 		assertEquals(reference2, view);
 		
-		List<Integer> view2 = list.subList(1, 1);
+		List<Integer> view2 = view.subList(1, 1);
 		assertTrue(view2.isEmpty());
 	}
 
+
+	@Test
+	void testSubListOfSublist() {
+		List<Integer> reference = List.of(1, 2, 3, 4, 5);
+		List<Integer> reference2 = reference.subList(1, reference.size());
+		
+		List<Integer> list = new CustomList<>(reference);
+		List<Integer> view = list.subList(1, list.size());
+		
+		assertEquals(reference2, view);
+		
+		List<Integer> reference3 = reference2.subList(1, reference2.size());
+		List<Integer> view3 = view.subList(1, view.size());
+		
+		assertEquals(reference3, view3);
+	}
+	
 	@Test
 	void testIsEmpty() {
 		List<Integer> list = new CustomList<>();
@@ -434,6 +481,31 @@ class CustomListTest {
 		
 		assertEquals(list.size() - 2, iterator.previousIndex());
 		assertEquals(list.size(), iterator.nextIndex());
+	}
+	
+	@Test
+	void testSortAll() {
+		List<Integer> reference = List.of(9, 0, -128, 23, 5);
+		
+		CustomList<Integer> list = new CustomList<>(reference);
+		Integer[] ints = reference.toArray(new Integer[0]);
+		
+		Arrays.sort(ints);
+		list.sort();	
+		
+		for(int i = 0; i < list.size(); ++i) {
+			assertEquals(list.get(i), ints[i]);
+		}
+	}
+	
+	@Test
+	void testSortWithNulls() {
+		CustomList<Integer> list = new CustomList<>(List.of(9, 0, -128, 23, 5));
+		list.add(null);
+		list.add(null);
+		
+		list.sort();	
+		assertNull(list.get(0));
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.github.lotashinski.collections;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		size = producer.size();
 	}
 
-
+	
 	@Override
 	public int size() {
 		return size;
@@ -123,6 +124,107 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		
 		return new SubList<>(this, fromIndex, size);
 	}
+	
+	/**
+	 * Sorts a collection using merge sort. When comparing, 
+	 * the type cast to Comparable will be used if 
+	 * possible. Otherwise, the type cast to 
+	 * string will be used.
+	 */
+	public void sort() {
+		sort(0, size());
+	}
+	
+	/**
+	 * Sorts a collection using merge sort. Comparator<? super T> will 
+	 * be used for comparison.
+	 */
+	public void sort(Comparator<? super T> comparator) {
+		sort(0, size, comparator);
+	}
+	
+	/**
+	 * Sorts a part of collection using merge sort. When comparing, 
+	 * the type cast to Comparable will be used if 
+	 * possible. Otherwise, the type cast to 
+	 * string will be used.
+	 */
+	public void sort(int from, int size) {
+		sort(from, size, new OrderingComparator<T>());
+	}
+	
+	/**
+	 * Sorts a part of collection using merge sort. Comparator<? super T> 
+	 * will be used for comparison
+	 */
+	public void sort(int from, int size, Comparator<? super T> comparator) {
+		List<T> view = subList(from, from + size);
+		List<? extends T> sorted = mergeSort(view, comparator);
+		
+		for(int i = 0; i < size; ++i) {
+			set(from + i, sorted.get(i));
+		}
+	}
+	
+	private static class OrderingComparator<T> implements Comparator<T> {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public int compare(T o1, T o2) {
+			if (o1 == null) return 1;
+			if (o2 == null) return -1;
+			
+			if (o2 instanceof Comparable) {
+				@SuppressWarnings({ "rawtypes" })
+				Comparable c2 = (Comparable) o2;
+				
+				return c2.compareTo(o1);
+			} 
+			
+			return o2.toString().compareTo(o1.toString());
+		}
+		
+	}
+	
+	private static <T> List<T> mergeSort(List<T> list, Comparator<? super T> comparator) {
+		if (list.size() < 2) return list;
+		
+		int leftSize = list.size() / 2;
+		int rightSize = list.size() - leftSize;
+		
+		List<T> left = mergeSort(list.subList(0, leftSize), comparator);
+		List<T> right = mergeSort(list.subList(leftSize, leftSize + rightSize), comparator);
+		
+		List<T> tmp = new CustomList<T>();
+		
+		int leftRef = 0;
+		int rightRef = 0;
+		while (leftRef < left.size() || rightRef < right.size()) {
+			if (leftRef == left.size()) { 
+				tmp.add(right.get(rightRef++));
+				continue;
+			}
+			else if (rightRef == right.size()) { 
+				tmp.add(left.get(leftRef++));
+				continue;
+			} 
+			
+			T le = left.get(leftRef);
+			T re = right.get(rightRef);
+			int comparableResult = comparator.compare(le, re);
+			
+			if (comparableResult > 0) {
+				tmp.add(le); 
+				leftRef++;
+			} else {
+				tmp.add(re);
+				rightRef++;
+			}
+		}
+		
+		return tmp;
+	}
+	
 	
 	private void shiftRight(int index, int elements) {
 		checkIndexAndThrowExceptionIfNeed(index);
@@ -280,7 +382,7 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		public List<E> subList(int fromIndex, int toIndex) {
 			checkModifications(main);
 			
-			return new SubList<>(this, fromIndex, toIndex);
+			return new SubList<>(this, fromIndex, toIndex - fromIndex);
 		}
 
 
@@ -290,7 +392,5 @@ public class CustomList<T> extends ModifiedList<T> implements List<T> {
 		}
 		
 	}
-	
-	
 	
 }
