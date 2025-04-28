@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CustomListTest {
@@ -27,7 +26,7 @@ class CustomListTest {
 	void testSizeZero() {
 		List<String> list = new CustomList<>();
 		
-		Assertions.assertEquals(list.size(), 0);
+		assertEquals(list.size(), 0);
 	}
 
 	@Test
@@ -286,8 +285,7 @@ class CustomListTest {
 
 	@Test
 	void testContains() {
-		List<Integer> reference = List.of(3);
-		List<Integer> list = new CustomList<>(reference);
+		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4, 5));
 		
 		assertTrue(list.contains(3));
 		assertFalse(list.contains(6));
@@ -297,10 +295,15 @@ class CustomListTest {
 	void testContainsAll() {
 		List<Integer> reference = List.of(1, 2, 3, 4, 5, 6, 7, 8);
 		List<Integer> referenceView = reference.subList(1, 4);
-		
 		List<Integer> referenceFail = List.of(-2, -1, 0, 1, 2);
 		
 		List<Integer> list = new CustomList<>(reference);
+		
+		// now the collection intersects with the reference, 
+		// but is not completely included in it
+		list.add(null);
+		list.add(-9);
+		list.add(-11);
 		
 		assertTrue(list.containsAll(referenceView));
 		assertFalse(list.containsAll(referenceFail));
@@ -308,21 +311,19 @@ class CustomListTest {
 
 	@Test
 	void testAddAllCollectionOfQextendsT() {
-		List<Integer> reference = List.of(1, 2, 3, 4, 5, 6);
-		
 		List<Integer> list = new CustomList<>(List.of(1, 2, 3));
 		list.addAll(List.of(4, 5, 6));
 		
+		List<Integer> reference = List.of(1, 2, 3, 4, 5, 6);
 		assertEquals(reference, list);
 	}
 
 	@Test
 	void testAddAllIntCollectionOfQextendsT() {
-		List<Integer> reference = List.of(1, 2, 3, 4, 5, 6);
-		
 		List<Integer> list = new CustomList<>(List.of(4, 5, 6));
 		list.addAll(0, List.of(1, 2, 3));
 		
+		List<Integer> reference = List.of(1, 2, 3, 4, 5, 6);
 		assertEquals(reference, list);
 	}
 
@@ -364,79 +365,79 @@ class CustomListTest {
 
 	@Test
 	void testIterator() {
-		List<Integer> reference = List.of(0, 1, 2, 3, 4);
-		List<Integer> list = new CustomList<>(reference);
+		List<Integer> sorce = List.of(0, 1, 2, 3, 4);
+		List<Integer> list = new CustomList<>(sorce);
 		
-		Iterator<Integer> refi = reference.iterator();
-		Iterator<Integer> listi = list.iterator();
+		Iterator<Integer> reference = sorce.iterator();
+		Iterator<Integer> iterator = list.iterator();
 		
-		while(refi.hasNext() && listi.hasNext()) {
-			assertEquals(refi.next(), listi.next());
+		while(reference.hasNext() && iterator.hasNext()) {
+			assertEquals(reference.next(), iterator.next());
 		}
 		
-		assertEquals(refi.hasNext(), listi.hasNext());
+		assertEquals(reference.hasNext(), iterator.hasNext());
 	}
 
 	@Test
 	void testToArray() {
-		Object[] reference = {1, 2, 3, 4};
+		Object[] sorce = {1, 2, 3, 4};
 		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4));
 		
-		assertArrayEquals(list.toArray(), reference);
+		assertArrayEquals(list.toArray(), sorce);
 	}
 
 	@Test
 	void testListIterator() {
-		List<Integer> reference = List.of(0, 1, 2, 3, 4);
-		List<Integer> list = new CustomList<>(reference);
+		List<Integer> sorce = List.of(0, 1, 2, 3, 4);
+		List<Integer> list = new CustomList<>(sorce);
 		
-		ListIterator<Integer> refi = reference.listIterator();
-		ListIterator<Integer> listi = list.listIterator();
+		ListIterator<Integer> reference = sorce.listIterator();
+		ListIterator<Integer> iterator = list.listIterator();
 		
-		while(refi.hasNext() && listi.hasNext()) {
-			assertEquals(refi.next(), listi.next());
+		while(reference.hasNext() && iterator.hasNext()) {
+			assertEquals(reference.next(), iterator.next());
 		}
 		
-		assertEquals(refi.hasNext(), listi.hasNext());
+		assertEquals(reference.hasNext(), iterator.hasNext());
 		
-		while(refi.hasPrevious() && listi.hasPrevious()) {
-			assertEquals(refi.previous(), listi.previous());
+		while(reference.hasPrevious() && iterator.hasPrevious()) {
+			assertEquals(reference.previous(), iterator.previous());
 		}
 		
-		assertEquals(refi.hasPrevious(), listi.hasPrevious());
+		assertEquals(reference.hasPrevious(), iterator.hasPrevious());
 		
-		while(refi.hasNext() && listi.hasNext()) {
-			assertEquals(refi.next(), listi.next());
+		while(reference.hasNext() && iterator.hasNext()) {
+			assertEquals(reference.next(), iterator.next());
 		}
 		
-		assertEquals(refi.hasNext(), listi.hasNext());
+		assertEquals(reference.hasNext(), iterator.hasNext());
 	}
 
 	@Test
 	void testListIteratorInt() {
-		List<Integer> reference = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-		List<Integer> list = new CustomList<>(reference);
+		List<Integer> sorce = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		List<Integer> list = new CustomList<>(sorce);
 		
-		ListIterator<Integer> refi = reference.listIterator(5);
+		ListIterator<Integer> reference = sorce.listIterator(5);
 		ListIterator<Integer> listi = list.listIterator(5);
 		
-		while(refi.hasNext() && listi.hasNext()) {
-			assertEquals(refi.next(), listi.next());
+		while(reference.hasNext() && listi.hasNext()) {
+			assertEquals(reference.next(), listi.next());
 		}
 		
-		assertEquals(refi.hasNext(), listi.hasNext());
+		assertEquals(reference.hasNext(), listi.hasNext());
 		
-		while(refi.hasPrevious() && listi.hasPrevious()) {
-			assertEquals(refi.previous(), listi.previous());
+		while(reference.hasPrevious() && listi.hasPrevious()) {
+			assertEquals(reference.previous(), listi.previous());
 		}
 		
-		assertEquals(refi.hasPrevious(), listi.hasPrevious());
+		assertEquals(reference.hasPrevious(), listi.hasPrevious());
 		
-		while(refi.hasNext() && listi.hasNext()) {
-			assertEquals(refi.next(), listi.next());
+		while(reference.hasNext() && listi.hasNext()) {
+			assertEquals(reference.next(), listi.next());
 		}
 		
-		assertEquals(refi.hasNext(), listi.hasNext());
+		assertEquals(reference.hasNext(), listi.hasNext());
 	}
 	
 	@Test
@@ -485,18 +486,26 @@ class CustomListTest {
 	
 	@Test
 	void testSortAll() {
-		List<Integer> reference = List.of(9, 0, -128, 23, 5);
+		CustomList<Integer> list = new CustomList<>(List.of(9, 0, -128, 23, 5));
+		Integer[] reference = new Integer[] {-128, 0, 5, 23, 9};
 		
-		CustomList<Integer> list = new CustomList<>(reference);
-		Integer[] ints = reference.toArray(new Integer[0]);
-		
-		Arrays.sort(ints);
+		Arrays.sort(reference);
 		list.sort();	
 		
 		for(int i = 0; i < list.size(); ++i) {
-			assertEquals(list.get(i), ints[i]);
+			assertEquals(list.get(i), reference[i]);
 		}
 	}
+	
+	@Test
+	void testSortPartial() {
+		List<Integer> target = List.of(9, 0, -128, 23, 5, 99, 12, 123, 3122);
+		CustomList<Integer> list = new CustomList<>(target);
+		list.sort(0, 5);
+		
+		List<Integer> reference = List.of(-128, 0, 5, 9, 23, 99, 12, 123, 3122);
+		assertEquals(list, reference);
+ 	}
 	
 	@Test
 	void testSortWithNulls() {
