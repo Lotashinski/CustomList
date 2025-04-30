@@ -1,16 +1,11 @@
 package com.github.lotashinski;
 
-import java.util.List;
-
 import com.github.lotashinski.collections.CustomList;
 
-/**
- * Hello world!
- */
 public class App {
     
 	public static void main(String[] args) {
-        List<String> list = new CustomList<>();
+		CustomList<String> list = new CustomList<>();
         list.add("Hello");
         list.add("!");
         list.add(" ");
@@ -20,9 +15,13 @@ public class App {
         for (String string : list) {
         	System.out.print(string);
         }
+        System.out.println();
         
-        CustomList<Person> persons = new CustomList<>();
-        persons.sort(null);
+        list.sort();
+        
+        for (String string : list) {
+        	System.out.print(string);
+        }
     }
     
 }

@@ -101,8 +101,15 @@ class CustomListTest {
 	void testRemoveObject() {
 		List<Integer> list = new CustomList<>();
 		
+		assertTrue(list.add(3));
 		assertTrue(list.add(1));
+		assertTrue(list.add(1));
+		assertTrue(list.add(3));
+		assertTrue(list.add(7));
+		assertTrue(list.add(0));
+		
 		assertTrue(list.remove(Integer.valueOf(1)));
+		assertEquals(List.of(3, 1, 3, 7, 0), list);
 	}
 
 	@Test
@@ -155,14 +162,16 @@ class CustomListTest {
 		
 		try {
 			list.get(-1);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 		
 		try {
 			list.get(list.size());
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 	}
 
@@ -179,38 +188,49 @@ class CustomListTest {
 		
 		try {
 			list.set(-1, 0);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 		
 		try {
 			list.set(list.size(), 0);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 	}
 
 	@Test
 	void testAddIntT() {
 		List<Integer> reference = List.of(1, 2, 3, 4, 5);
-		List<Integer> reference2 = List.of(1, 2, 0, 3, 4, 5);
+		List<Integer> reference2 = List.of(1, 2, 0, 3, 4, 5, 0);
 		
 		List<Integer> list = new CustomList<>(reference);
 		assertEquals(reference, list);
 		
 		list.add(2, reference2.get(2));
+		list.add(list.size(), 0);
+		
 		assertEquals(reference2, list);
+	}
+	
+	@Test
+	void testAddIntTExceptions() {
+		List<Integer> list = new CustomList<>();
 		
 		try {
 			list.add(-1, 0);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 		
 		try {
-			list.add(list.size(), 0);
+			list.add(list.size() + 1, 0);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
-			
+			// it is OK
 		} 
 	}
 
@@ -230,12 +250,14 @@ class CustomListTest {
 		
 		try {
 			list.remove(-1);
+			fail();
 		} catch (IndexOutOfBoundsException e) {
 			// it is OK
 		} 
 		
 		try {
 			list.remove(list.size());
+			fail();
 		} catch (IndexOutOfBoundsException e) {
 			// it is OK
 		}
@@ -249,7 +271,13 @@ class CustomListTest {
 		List<Integer> list = new CustomList<>(reference);
 		List<Integer> view = list.subList(1, list.size());
 		
-		assertEquals(reference2, view);
+		for(int i = 0; i < view.size(); ++i) {
+			int viewI = view.get(i);
+			int refI = reference2.get(i);
+			assertEquals(viewI, refI);
+		}
+		
+		assertEquals(view, reference2);
 		
 		List<Integer> view2 = view.subList(1, 1);
 		assertTrue(view2.isEmpty());
@@ -448,6 +476,7 @@ class CustomListTest {
 		
 		try {
 			iterator.remove();
+			fail();
 		}catch (IllegalStateException e) {
 			// It`s OK
 		}
