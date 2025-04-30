@@ -39,6 +39,12 @@ public class CustomList<T> extends AbstractList<T> implements List<T> {
 	 */
 	private Object[] container;
 
+	/**
+	 * Counter of structural changes (remove, add, clear and other). Changes when
+	 * the collection size changes.
+	 * 
+	 * Necessary for SubList and ListIterator
+	 */
 	private int version = 0;
 
 	/**
@@ -195,7 +201,7 @@ public class CustomList<T> extends AbstractList<T> implements List<T> {
 	@Override
 	public T set(int index, T element) {
 		checkIndexAndThrowIfNeed(index);
-
+		
 		T tmp = get(index);
 		container[index] = element;
 
@@ -378,12 +384,11 @@ public class CustomList<T> extends AbstractList<T> implements List<T> {
 		}
 	}
 
-
 	@Override
 	public ListIterator<T> listIterator(int index) {
 		return new CustomListiterator<>(this, index, 0, size());
 	}
-	
+
 	/**
 	 * The default implementation of the comparator. If the elements being compared
 	 * implement comparison behavior, then {@code compareTo(other)} will be called.
@@ -506,7 +511,7 @@ public class CustomList<T> extends AbstractList<T> implements List<T> {
 
 		int elementsBeforeShift = size();
 		setSize(elementsBeforeShift - elements);
-		
+
 		for (; index < elementsBeforeShift - elements; ++index) {
 			container[index] = container[index + elements];
 		}
