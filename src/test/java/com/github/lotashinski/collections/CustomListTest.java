@@ -301,6 +301,15 @@ class CustomListTest {
 	}
 	
 	@Test
+	void testClearSubList() {
+		List<Integer> list = new CustomList<>(List.of(1, 2, 3, 4, 5));
+		List<Integer> reference = List.of(1, 5);
+		
+		list.subList(1, 4).clear();
+		assertEquals(list, reference);
+	}
+	
+	@Test
 	void testIsEmpty() {
 		List<Integer> list = new CustomList<>();
 		
