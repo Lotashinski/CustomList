@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Intended to generalize the SubList and CustomList functionality
- * 
- * Implemented common behavior
+ * Intended to generalize the SubList and CustomList functionality.
+ * Implemented common behavior.
  * 
  * @param <T> the type of elements in this list
  * 

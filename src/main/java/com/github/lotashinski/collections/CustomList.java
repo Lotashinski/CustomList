@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
  * elements requires O(n) time. All of the other operations run in linear time.
  * 
  * @param <T> the type of elements in this list
+ * 
  * @author Alexander Lotashinsky
  * @see Collection
  * @see List
@@ -201,7 +202,7 @@ public class CustomList<T> extends AbstractList<T> implements List<T> {
 	@Override
 	public T set(int index, T element) {
 		checkIndexAndThrowIfNeed(index);
-		
+
 		T tmp = get(index);
 		container[index] = element;
 
