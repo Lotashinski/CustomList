@@ -12,7 +12,6 @@ import java.util.ListIterator;
  * Implemented common behavior
  * 
  * @param <T> the type of elements in this list
- * 
  * @author Alexander Lotashinsky
  * @see CustomList
  * @see Collection
